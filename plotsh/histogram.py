@@ -31,7 +31,7 @@ def plot_raw(title='', data=[], bar='▄', w=0, h=0):
             title = ' ' * diff + title + ' ' * diff
 
     binSize = h-3
-    if binSize <= 0:
+    if binSize <= 1:
         binSize = 5
 
     histo_data = [0] * binSize
@@ -40,23 +40,18 @@ def plot_raw(title='', data=[], bar='▄', w=0, h=0):
 
     minv = min(data)
     maxv = max(data)
-    binw = math.ceil((maxv - minv) / binSize)
+    binw = (maxv - minv) / float(binSize)
 
-    if binSize == 1:
-        histo_min[0] = minv
-        histo_max[0] = maxv
-        histo_data[0] = len(data)
-    else:
-        for i in range(0, binSize-1):
-            histo_min[i] = minv + (i * binw)
-            histo_max[i] = minv + (i + 1 * binw)
+    for i in range(0, binSize-1):
+        histo_min[i] = minv + (i * binw)
+        histo_max[i] = minv + ((i + 1) * binw)
 
-        histo_min[-1] = histo_max[-2]
-        histo_max[-1] = max(maxv,histo_max[-2])
+    histo_min[-1] = histo_max[-2]
+    histo_max[-1] = max(maxv,histo_max[-2])
 
     for datum in data:
         added = False
-        for i in range(0, len(histo_max)):
+        for i in range(0, binSize):
             if datum < histo_max[i]:
                 histo_data[i] = histo_data[i] + 1
                 added = True
@@ -83,7 +78,7 @@ def plot_raw(title='', data=[], bar='▄', w=0, h=0):
         minl = _u_str(histo_min[i]).zfill(min_label_len)
         maxl = _u_str(histo_max[i]).zfill(min_label_len)
         result.append('%s-%s:' % (minl,maxl))
-        v = int(math.ceil(csize * histo_data[i]))
+        v = int(math.floor(csize * histo_data[i]))
         result.append(bar * v)
         result.append('\n')
 
