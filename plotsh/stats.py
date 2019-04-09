@@ -3,24 +3,22 @@
 # http://www.blacktriangles.com
 #
 
-def get_stats(data, units):
-    rep = {
-        new: data[-1],
-        last: data[-2],
-        percs: round(((new/last)-1) * 100, 2),
-        min: min(data),
-        max: max(data),
-        avg: sum(data) / len(data),
-        units: units,
-    }
+def get_stats(data, units, w=30):
 
-    if rep.percs > 0:
-        rep.percs = '+{0:.2f}'.format(rep.percs)
+    new = round(data[-1], 2)
+    last = round(data[-2], 2)
+    percs = round(((new/last)-1) * 100, 2)
+    minv = round(min(data), 2)
+    maxv = round(max(data), 2)
+    avg = round(sum(data) / len(data), 2)
 
-    return '''                                                                                                     
-    Latest: %(new)s %(units)s (%(percs)s%%)\n
-    Last: %(last)s\n
-    Min: %(min)s\n
-    Max: %(max)s\n
-    Avg: %(avg)s\n
-    ''' % data)
+    if percs > 0:
+        percs = '+{0:.2f}'.format(percs)
+
+    return F'''
+  {new} {units} ({percs}%)
+  Last: {last}
+  Min: {minv}
+  Max: {maxv}
+  Avg: {avg}
+'''
